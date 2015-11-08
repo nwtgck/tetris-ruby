@@ -20,9 +20,9 @@ $block = [
 	# [0,0,0]
 ]
 
-# $block = [
-# 	[1, 1, 1, 1],
-# ]
+$block = [
+	[1, 1, 1, 1],
+]
 
 # $block = [
 # 	[1],
@@ -49,7 +49,12 @@ end
 def display win, stage=put_block_stage
 	H.times{|i|
 		win.setpos(i+1, 1)
-		line = stage[i].map{|cell| ['  ', "圖"][cell]}.join
+		begin
+			line = stage[i].map{|cell| ['  ', "圖"][cell]}.join
+		rescue
+			p [i, $!]
+			# throw $!
+		end
 	    win.addstr(line)
 	}
 	win.refresh
@@ -68,7 +73,7 @@ def valid? add_top, add_left, block=$block
 				new_i = i + top
 				new_j = j + left
 				# ステージから出てしまうときはfalse
-				return false if c == 1 && (new_i == H || new_j == -1 || new_j == W)
+				return false if c == 1 && (new_i >= H || new_j <= -1 || new_j >= W)
 				# 既存のブロックとぶつかるときもfalse
 				return false if c == 1 && ($stage[new_i][new_j] == 1)
 			}
@@ -103,11 +108,52 @@ def type_wait win, wait, rate=100
     		display(win)
     	when 'n'
     		block = lrotate
-    		$block = block if valid?(0, 0, block)
+    		if valid?(0, 0, block)
+    			$block = block
+    		elsif valid?(0, 1, block)
+    			$block = block
+    			$left += 1
+    		elsif valid?(0, 2, block)
+    			$block = block
+    			$left += 2
+    		elsif valid?(0, 3, block)
+    			$block = block
+    			$left += 3
+    		elsif valid?(0, -1, block)
+    			$block = block
+    			$left += -1
+    		elsif valid?(0, -2, block)
+    			$block = block
+    			$left += -2
+    		elsif valid?(0, -3, block)
+    			$block = block
+    			$left += -3
+    		end
+    			
     		display(win)
     	when 'm'
     		block = rrotate
-    		$block = block if valid?(0, 0, block)
+    		if valid?(0, 0, block)
+    			$block = block
+    		elsif valid?(0, 1, block)
+    			$block = block
+    			$left += 1
+    		elsif valid?(0, 2, block)
+    			$block = block
+    			$left += 2
+    		elsif valid?(0, 3, block)
+    			$block = block
+    			$left += 3
+    		elsif valid?(0, -1, block)
+    			$block = block
+    			$left += -1
+    		elsif valid?(0, -2, block)
+    			$block = block
+    			$left += -2
+    		elsif valid?(0, -3, block)
+    			$block = block
+    			$left += -3
+    		end
     		display(win)
     	end
     	sleep wait.to_f / rate

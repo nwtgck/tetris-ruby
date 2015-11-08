@@ -224,13 +224,13 @@ def remove_block win
 	
 	# 削除する行があるなら
 	if !remove_lines.empty?
+		# 削除アニメーション1
 		# 削除するまえ
 		pre_stage = $stage.map(&:clone)
 		# 削除後（穴抜き）
 		post_stage = $stage.map.with_index{|l, i|
 			remove_lines.include?(i) ? Array.new(W, 0): l
 		}
-
 		# 削除する行を点滅させる
 		3.times{
 			display(win, post_stage)
@@ -239,6 +239,17 @@ def remove_block win
 			sleep 0.1
 		}
 
+
+		# 削除アニメーション2
+		# (0..W).each{|w|
+		# 	remove_lines.each{|idx|
+		# 		win.setpos(idx+1, 1)
+		# 		win.addstr('圖'*(W-w) + '　'*w)
+		# 	}
+		# 	win.refresh
+		# 	sleep 0.005
+		# }
+		
 		# 削除する
 		idx = H-1
 		while idx >= 0

@@ -14,18 +14,22 @@ FILL = 1
 $stage = Array.new(H){Array.new(W){BLANK}}
 $top = 0
 $left = W/2-1
+$block = [
+	[1,1,1],
+	[0,0,1],
+	# [0,0,0]
+]
+
 # $block = [
-# 	[1,1,1],
-# 	[0,0,1],
-# 	[0,0,0]
+# 	[1, 1, 1, 1],
 # ]
 
-$block = [
-	[1],
-	[1],
-	[1],
-	[1]
-]
+# $block = [
+# 	[1],
+# 	[1],
+# 	[1],
+# 	[1]
+# ]
 
 p $stage
 
@@ -52,14 +56,14 @@ def display win, stage=put_block_stage
 end
 
 # 新しい場所にブロックがいけるか
-def valid? add_top, add_left
+def valid? add_top, add_left, block=$block
 	top = $top + add_top
 	left = $left + add_left
 
 	if top == H || left == -1 || left == W
 		false
 	else
-		$block.each_with_index{|l, i|
+		block.each_with_index{|l, i|
 			l.each_with_index{|c, j|
 				new_i = i + top
 				new_j = j + left
@@ -71,6 +75,16 @@ def valid? add_top, add_left
 		}
 		true
 	end
+end
+
+# 左回転
+def lrotate block=$block
+	block[0].reverse.zip(*block[1..-1].map(&:reverse))
+end
+
+# 右回転
+def rrotate block=$block
+	lrotate(lrotate(lrotate(block)))
 end
 
 # ブロックの操作もしつつ待つ
@@ -86,6 +100,14 @@ def type_wait win, wait, rate=100
     		display(win)
     	when 'z'
     		$top += 1 if valid?(1, 0)
+    		display(win)
+    	when 'n'
+    		block = lrotate
+    		$block = block if valid?(0, 0, block)
+    		display(win)
+    	when 'm'
+    		block = rrotate
+    		$block = block if valid?(0, 0, block)
     		display(win)
     	end
     	sleep wait.to_f / rate

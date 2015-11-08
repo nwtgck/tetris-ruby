@@ -72,10 +72,10 @@ BLOCKS = [
 
 	# O
 	[
-		[0,0],
-		[1,1],
-		[1,1],
-		[0,0]
+		[0,0,0,0],
+		[0,1,1,0],
+		[0,1,1,0],
+		[0,0,0,0]
 	]
 
 ]
@@ -85,7 +85,7 @@ BLOCKS = [
 def init_block
 	$top = -1
 	$left = W/2-2
-	$block = BLOCKS.last
+	$block = BLOCKS.sample
 end
 
 

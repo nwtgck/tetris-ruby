@@ -14,24 +14,66 @@ FILL = 1
 $stage = Array.new(H){Array.new(W){BLANK}}
 $top = 0
 $left = W/2-1
+
+# I
 $block = [
-	[1,1,1],
-	[0,0,1],
-	# [0,0,0]
+	[0,0,1,0,0],
+	[0,0,1,0,0],
+	[0,0,1,0,0],
+	[0,0,1,0,0],
+	[0,0,0,0,0],
 ]
 
+# L
 $block = [
-	[1, 1, 1, 1],
+	[0,0,0,0,0],
+	[0,0,1,0,0],
+	[0,0,1,0,0],
+	[0,0,1,1,0],
+	[0,0,0,0,0],
 ]
 
-# $block = [
-# 	[1],
-# 	[1],
-# 	[1],
-# 	[1]
-# ]
+# 逆L
+$block = [
+	[0,0,0,0,0],
+	[0,0,1,0,0],
+	[0,0,1,0,0],
+	[0,1,1,0,0],
+	[0,0,0,0,0],
+]
 
-p $stage
+# Z
+$block = [
+	[0,0,0,0,0],
+	[0,1,1,0,0],
+	[0,0,1,1,0],
+	[0,0,0,0,0],
+	[0,0,0,0,0],
+]
+
+#  逆Z
+$block = [
+	[0,0,0,0,0],
+	[0,0,1,1,0],
+	[0,1,1,0,0],
+	[0,0,0,0,0],
+	[0,0,0,0,0],
+]
+
+# T
+$block = [
+	[0,0,0,0,0],
+	[0,0,1,0,0],
+	[0,1,1,1,0],
+	[0,0,0,0,0],
+	[0,0,0,0,0],
+]
+
+# O
+$block = [
+	[1,1],
+	[1,1]
+]
 
 # ブロックをおいたステージを返す
 def put_block_stage
@@ -65,21 +107,18 @@ def valid? add_top, add_left, block=$block
 	top = $top + add_top
 	left = $left + add_left
 
-	if top == H || left == -1 || left == W
-		false
-	else
-		block.each_with_index{|l, i|
-			l.each_with_index{|c, j|
-				new_i = i + top
-				new_j = j + left
-				# ステージから出てしまうときはfalse
-				return false if c == 1 && (new_i >= H || new_j <= -1 || new_j >= W)
-				# 既存のブロックとぶつかるときもfalse
-				return false if c == 1 && ($stage[new_i][new_j] == 1)
-			}
+	block.each_with_index{|l, i|
+		l.each_with_index{|c, j|
+			new_i = i + top
+			new_j = j + left
+			# ステージから出てしまうときはfalse
+			return false if c == 1 && (new_i >= H || new_j <= -1 || new_j >= W)
+			# 既存のブロックとぶつかるときもfalsensn
+			return false if c == 1 && ($stage[new_i][new_j] == 1)
 		}
-		true
-	end
+	}
+	true
+	
 end
 
 # 左回転
@@ -203,7 +242,6 @@ def remove_block win
 end
 
 begin
-    # s = "Hello World!"
     win = Curses::Window.new(H+2, (W+1)*2, 1, 2)
     win.box(?|,'-',?+)
     win.nodelay = 1
@@ -217,7 +255,7 @@ begin
 	    	# 落下する
 		    $top += 1
 		    # 落下時間まちながらタイプもできる
-			type_wait(win, 0.5)
+			type_wait(win, 1.0)
 		else
 			# 接着待ち
 			type_wait(win, 0.5)

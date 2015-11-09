@@ -233,9 +233,9 @@ def remove_block win
 		}
 		# 削除する行を点滅させる
 		3.times{
-			display(win, post_stage)
-			sleep 0.05
 			display(win, pre_stage)
+			sleep 0.1
+			display(win, post_stage)
 			sleep 0.1
 		}
 

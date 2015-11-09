@@ -107,7 +107,7 @@ def display win, stage=put_block_stage
 	H.times{|i|
 		win.setpos(i+1, 1)
 		begin
-			line = stage[i].map{|cell| ['  ', "圖"][cell]}.join
+			line = stage[i].map{|cell| ['  ', "回"][cell]}.join
 		rescue
 			p [i, $!]
 			# throw $!

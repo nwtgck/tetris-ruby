@@ -269,9 +269,16 @@ def remove_block win
 		end
 	end
 
-
 end
 
+# ゲームオーバー判定
+def gameover?
+	$block.each_with_index.any?{|l, i|
+		l.each_with_index.any?{|e, j|
+			e == 1 && $stage[i+$top][j+$left] == 1
+		}
+	}
+end
 
 begin
     win = Curses::Window.new(H+2, (W+1)*2, 1, 2)
@@ -282,6 +289,11 @@ begin
     loop{
     	# 画面表示
 	    display(win)
+
+	    # ゲームオーバーなら
+	    if gameover?
+	    	exit
+	    end
 
 	    # 落下できるなら
 	    if valid?(1, 0)

@@ -152,7 +152,7 @@ def rrotate block=$block
 end
 
 # ブロックの操作もしつつ待つ
-def type_wait win, wait, rate=100
+def type_wait win, wait, rate=1000
 	rate.times{
     	c = win.getch
     	case c
@@ -269,6 +269,9 @@ def remove_block win
 		end
 	end
 
+	# 消したブロックの行数を返す
+	remove_lines.size
+
 end
 
 # ゲームオーバー判定
@@ -277,6 +280,16 @@ def gameover?
 		l.each_with_index.any?{|e, j|
 			e == 1 && $stage[i+$top][j+$left] == 1
 		}
+	}
+end
+
+# ゲームオーバー時のアニメーション
+def gameover_anime win
+	H.downto(1){|i|
+		win.setpos(i, 1)
+	    win.addstr('回'*W)
+	    sleep 0.08
+	    win.refresh
 	}
 end
 
@@ -292,6 +305,7 @@ begin
 
 	    # ゲームオーバーなら
 	    if gameover?
+		    gameover_anime win
 	    	exit
 	    end
 

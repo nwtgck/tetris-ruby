@@ -286,12 +286,15 @@ begin
 		else
 			# 接着待ち
 			type_wait(win, 0.5)
-			# 接着する
-			$stage = put_block_stage
-			# ブロックをけす
-			remove_block(win)
-			# 次のブロック作成
-			init_block
+			# 待ったあとに下があるなら
+			if !valid?(1, 0)
+				# 接着する
+				$stage = put_block_stage
+				# ブロックをけす
+				remove_block(win)
+				# 次のブロック作成
+				init_block
+			end
 		end	   	
 	    
 	}

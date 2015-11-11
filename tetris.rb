@@ -15,6 +15,11 @@ $stage = Array.new(H){Array.new(W){BLANK}}
 $top = 0
 $left = 0
 
+# ブロックが1マス落下する時間
+DROP_TIME = 1.0
+# ブロックが接着される時間
+PUT_TIME = 0.5
+
 BLOCKS = [
 	# I
 	[
@@ -28,18 +33,18 @@ BLOCKS = [
 	# L
 	[
 		[0,0,0,0,0],
-		[0,0,1,0,0],
-		[0,0,1,0,0],
-		[0,0,1,1,0],
+		[0,0,0,1,0],
+		[0,1,1,1,0],
+		[0,0,0,0,0],
 		[0,0,0,0,0],
 	],
 
 	# 逆L
 	[
 		[0,0,0,0,0],
-		[0,0,1,0,0],
-		[0,0,1,0,0],
-		[0,1,1,0,0],
+		[0,1,0,0,0],
+		[0,1,1,1,0],
+		[0,0,0,0,0],
 		[0,0,0,0,0],
 	],
 
@@ -83,9 +88,9 @@ BLOCKS = [
 
 # ブロックの初期設定
 def init_block
-	$top = -1
-	$left = W/2-2
 	$block = BLOCKS.sample
+	$top = -1
+	$left = W/2 - ($block.first.size==5 ? 3 : 2);
 end
 
 
@@ -107,7 +112,7 @@ def display win, stage=put_block_stage
 	H.times{|i|
 		win.setpos(i+1, 1)
 		begin
-			line = stage[i].map{|cell| ['  ', "回"][cell]}.join
+			line = stage[i].map{|cell| ['  ', "回"][cell]}.join
 		rescue
 			p [i, $!]
 			# throw $!
@@ -267,6 +272,7 @@ def remove_block win
 
 end
 
+
 begin
     win = Curses::Window.new(H+2, (W+1)*2, 1, 2)
     win.box(?|,'-',?+)
@@ -282,10 +288,10 @@ begin
 	    	# 落下する
 		    $top += 1
 		    # 落下時間まちながらタイプもできる
-			type_wait(win, 1.0)
+			type_wait(win, DROP_TIME)
 		else
 			# 接着待ち
-			type_wait(win, 0.5)
+			type_wait(win, PUT_TIME)
 			# 待ったあとに下があるなら
 			if !valid?(1, 0)
 				# 接着する
